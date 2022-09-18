@@ -2,6 +2,8 @@
 
 # Objektai: mokykla -> aukštas -> klasė
 
+# Roles: Administratorius, Moksleivis, Mokytojas/Uzklasines veiklos vedejas
+
 # Klasių nuoma užklasinei veiklai ir tvarkaraščių sistema
 Kiekvieno aukšto klasių ir pamokų sąrašai (tvarkaraščiai)
 
