@@ -9,7 +9,7 @@ Laisvų kabinetų rezervacija užklasinei veiklai
 
 # Objektai: mokykla -> aukštas -> klasė
 
-# Rolės: 
+# Rolės ir jų funkcijos: 
 
 Administratorius: 
 
