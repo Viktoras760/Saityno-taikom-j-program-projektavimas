@@ -1,6 +1,6 @@
-# Saityno-taikomuju-programu-projektavimas
+# Saityno-taikomųjų-programų-projektavimas
 
-# Klasių nuoma užklasinei veiklai ir tvarkaraščių sistema (Ideja)
+# Klasių nuoma užklasinei veiklai ir tvarkaraščių sistema (Idėja)
 Kiekvieno aukšto klasių ir pamokų sąrašai (tvarkaraščiai)
 
 Kiekvienos klasės užimtumo (pamokų) grafikas
@@ -9,7 +9,7 @@ Laisvų kabinetų rezervacija užklasinei veiklai
 
 # Objektai: mokykla -> aukštas -> klasė
 
-# Roles: 
+# Rolės: 
 
 Administratorius: 
 
@@ -31,7 +31,7 @@ Moksleivis:
 
 • Registracija/Atsisakymas į užklasines veiklas
 
-Mokytojas/Uzklasines veiklos vedejas:
+Mokytojas/Užklasinės veiklos vedėjas:
 
 • Laisvų klasių tvarkaraščio peržiūra
 
@@ -39,7 +39,7 @@ Mokytojas/Uzklasines veiklos vedejas:
 
 • Užklasinės veiklos sukūrimas ir aprašymas
 
-# Architektura
+# Architektūra
 
 Sistemos sudedamosios dalys:
 • Kliento pusė (ang. Front-End) – naudojant React.js; • Serverio pusė (angl. Back-End) – naudojant PHP Laravel. Duomenų bazė – MySQL.
