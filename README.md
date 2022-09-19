@@ -47,7 +47,7 @@ Mokytojas/Užklasinės veiklos vedėjas:
 
 • Laisvų klasių rezervacija
 
-• Užklasinės veiklos sukūrimas ir aprašymas
+• Užklasinės veiklos sukūrimas, aprašymas, redagavimas, šalinimas
 
 # Architektūra
 
