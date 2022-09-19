@@ -1,15 +1,32 @@
 # Saityno-taikomuju-programu-projektavimas
 
-# Objektai: mokykla -> aukštas -> klasė
-
-# Roles: Administratorius, Moksleivis, Mokytojas/Uzklasines veiklos vedejas
-
-# Klasių nuoma užklasinei veiklai ir tvarkaraščių sistema
+# Klasių nuoma užklasinei veiklai ir tvarkaraščių sistema (Ideja)
 Kiekvieno aukšto klasių ir pamokų sąrašai (tvarkaraščiai)
 
 Kiekvienos klasės užimtumo (pamokų) grafikas
 
 Laisvų kabinetų rezervacija užklasinei veiklai 
+
+# Objektai: mokykla -> aukštas -> klasė
+
+# Roles: 
+
+Administratorius: 
+• Naujos paskyros patvirtinimas
+• Paskyrų šalinimas
+• Vedančio pamoką mokytojo keitimas
+• Pamokų priskirimas mokytojams
+• Užklasinės veiklos kūrimo patvirtinimas
+
+Moksleivis: 
+• Tvarkaraščio peržiūra
+• Kiekvieno dalyko(modulio) informacijos peržiūra
+• Registracija/Atsisakymas į užklasines veiklas
+
+Mokytojas/Uzklasines veiklos vedejas:
+• Laisvų klasių tvarkaraščio peržiūra
+• Laisvų klasių rezervacija
+• Užklasinės veiklos sukūrimas ir aprašymas
 
 # Architektura
 
