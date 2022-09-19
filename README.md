@@ -21,7 +21,15 @@ Mokytojas po paskyros patvirtinimo galės matyti jam priskirtas vesti pamokas ir
 
 # Rolės ir jų funkcijos: 
 
-Administratorius: 
+Sistemos administratorius:
+
+• Naujos mokyklos pridėjimas/redagavimas/peržiūra/šalinimas
+
+• Mokyklos administratoriaus paskyros sukūrimas/šalinimas/redagavimas/peržiūra
+
+
+
+Mokyklos Administratorius: 
 
 • Naujos paskyros patvirtinimas
 
