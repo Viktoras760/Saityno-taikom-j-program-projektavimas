@@ -23,14 +23,13 @@ Administratorius:
 
 • Užklasinės veiklos kūrimo patvirtinimas
 
-
 Moksleivis: 
+
 • Tvarkaraščio peržiūra
 
 • Kiekvieno dalyko(modulio) informacijos peržiūra
 
 • Registracija/Atsisakymas į užklasines veiklas
-
 
 Mokytojas/Uzklasines veiklos vedejas:
 
@@ -39,7 +38,6 @@ Mokytojas/Uzklasines veiklos vedejas:
 • Laisvų klasių rezervacija
 
 • Užklasinės veiklos sukūrimas ir aprašymas
-
 
 # Architektura
 
