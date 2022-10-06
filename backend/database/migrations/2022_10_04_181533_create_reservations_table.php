@@ -4,28 +4,26 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
+class CreateReservationTable extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
     public function up()
     {
-        Schema::create('reservations', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+        Schema::create('reservation', function (Blueprint $table) {
+
+		$table->string('Lessons_name');
+		$table->string('Reservation_period');
+		$table->integer('id_Reservation',100);
+        $table->integer('Lower_grade_limit',2);
+        $table->integer('Upper_grade_limit',2);
+		$table->integer('fk_Classroomid_Classroom',20);
+		$table->integer('fk_Userid_User',50);
+    
+
         });
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
     public function down()
     {
-        Schema::dropIfExists('reservations');
+        Schema::dropIfExists('reservation');
     }
 };

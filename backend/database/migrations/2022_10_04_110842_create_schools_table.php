@@ -9,13 +9,11 @@ class CreateSchoolTable extends Migration
     public function up()
     {
         Schema::create('school', function (Blueprint $table) {
-
-		$table->string('Name');
-		$table->string('Adress');
-		$table->integer('Pupil_amount',5);
-		$table->integer('Teacher_amount',4);
-		$table->integer('id_School',10);
-
+            $table->id('id_School');
+		    $table->string('Name');
+		    $table->string('Adress');
+		    $table->integer('Pupil_amount',5);
+		    $table->integer('Teacher_amount',4);
         });
     }
 

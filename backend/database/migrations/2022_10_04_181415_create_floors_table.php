@@ -10,7 +10,7 @@ class CreateFloorTable extends Migration
     {
         Schema::create('floor', function (Blueprint $table) {
 
-		$table->integer('Class_number',5);
+		$table->integer('Classroom_amount',5);
 		$table->tinyInteger('Sport_equipment',1);
 		$table->integer('id_Floor',20);
 		$table->integer('fk_Schoolid_School',10);

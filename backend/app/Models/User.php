@@ -8,6 +8,35 @@ use Illuminate\Database\Eloquent\Model;
 class User extends Model
 {
     use HasFactory;
+
+    protected $table = 'user';
+
+    protected $primaryKey = 'id_User';
+
+    protected $fillable = [
+        'Name',
+        'Surname',
+        'Personal_code',
+        'Email',
+        'Grade',
+        'Password',
+        'fk_Schoolid_School'
+    ];
+
+    protected $hidden = [
+        'Confirmed',
+        'fk_Schoolid_School'
+    ];
+
+    public function school()
+    {
+        return $this->hasOne('App\Models\School', 'id_School', 'fk_Schoolid_School');
+    }
+
+    public function reservations()
+    {
+        return $this->hasMany('App\Models\Reservation', 'fk_Userid_User', 'id_User');
+    }
 }
 /*
 <?php

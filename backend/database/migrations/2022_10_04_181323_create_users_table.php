@@ -14,11 +14,12 @@ class CreateUserTable extends Migration
 		$table->string('Surname');
 		$table->integer('Personal_code',15)->nullable()->default('NULL');
 		$table->string('Email')->nullable()->default('NULL');
+        $table->integer('Grade',2)->nullable()->default('NULL');
 		$table->string('Password');
 		$table->tinyInteger('Confirmed',1);
 		$table->integer('id_User',50);
 		$table->integer('fk_Schoolid_School',10)->nullable()->default('NULL');
-		$table->enum('Role',['Pupil','Teacher','School Administrator','System Administrator']);
+		$table->enum('Role',['Pupil','Teacher','School Administrator','System Administrator'])->default('Pupil');
 
         });
     }
