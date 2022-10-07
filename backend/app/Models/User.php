@@ -24,9 +24,11 @@ class User extends Model
     ];
 
     protected $hidden = [
-        'Confirmed',
+        'Confirmation',
         'fk_Schoolid_School'
     ];
+
+    public $timestamps=false;
 
     public function school()
     {

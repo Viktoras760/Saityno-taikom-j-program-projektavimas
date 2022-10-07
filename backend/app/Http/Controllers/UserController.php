@@ -16,6 +16,7 @@ class UserController extends Controller
         $user->Surname= $req->input('Surname');
         $user->Personal_code= $req->input('Personal_code');
         $user->Email= $req->input('Email');
+        $user->Grade= $req->input('Grade');
         $user->Password= Hash::make($req->input('Password'));
         $user->save();
         return $user;
