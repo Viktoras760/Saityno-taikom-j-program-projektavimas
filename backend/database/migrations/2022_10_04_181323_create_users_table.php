@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserTable extends Migration
+return new class extends Migration
 {
     public function up()
     {
@@ -12,13 +12,13 @@ class CreateUserTable extends Migration
 
 		$table->string('Name');
 		$table->string('Surname');
-		$table->integer('Personal_code',15)->nullable()->default('NULL');
+		$table->integer('Personal_code')->nullable();
 		$table->string('Email')->nullable()->default('NULL');
-        $table->integer('Grade',2)->nullable()->default('NULL');
+        $table->integer('Grade')->nullable();
 		$table->string('Password');
-		$table->tinyInteger('Confirmed',1);
-		$table->integer('id_User',50);
-		$table->integer('fk_Schoolid_School',10)->nullable()->default('NULL');
+		$table->tinyInteger('Confirmed');
+		$table->integer('id_User',true);
+		$table->integer('fk_Schoolid_School')->nullable();
 		$table->enum('Role',['Pupil','Teacher','School Administrator','System Administrator'])->default('Pupil');
 
         });
