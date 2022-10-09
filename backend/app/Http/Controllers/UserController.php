@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+
 class UserController extends Controller
 {
-    //Register, Login and Authentication method controller
 
+    // New user registration (adding to database)
     function register(Request $req)
     {
         $user = new User;
@@ -16,10 +17,63 @@ class UserController extends Controller
         $user->Surname= $req->input('Surname');
         $user->Personal_code= $req->input('Personal_code');
         $user->Email= $req->input('Email');
-        $user->Grade= $req->input('Grade');
         $user->Password= Hash::make($req->input('Password'));
         $user->save();
         return $user;
     }
+
+
+    function getAllUncomfirmed()
+    {
+        $uncomfirmed = \App\Models\User::where('user.Confirmation','=','Uncomfirmed')->get();
+
+        if (count($uncomfirmed) < 1) {
+            return response()->json(['message' => 'Uncomfirmed registration requests not found'], 404);
+        }
+        return $uncomfirmed;
+    }
+
+    function confirmRegistrationRequest($id, Request $request)
+    {
+        $user = \App\Models\User::find($id);
+
+        $user->update([
+            'fk_Schoolid_School' => $request->school,
+            'Confirmation' => $request->Confirmation,
+            'Grade' => $request->Grade
+        ]);
+
+        return response()->json(['success' => 'User updated successfully']);
+    }
+
+    public function declineRegistrationRequest($id)
+    {
+        User::where('id_User',$id)->update(['Confirmation'=>'Declined']);
+        return response()->json(['message' => 'Registration declined'], 200);
+    }
+
+    function getAllUsers()
+    {
+        $users = \App\Models\User::all();
+
+        if ($users == "") {
+            return response()->json(['message' => 'Users not found'], 404);
+        }
+        return $users;
+    }
+
+    function deleteUser($id)
+    {
+        $user = \App\Models\User::find($id);
+
+        if ($user == "") {
+            return response()->json(['message' => 'User does not exist'], 404);
+        }
+
+        $user->delete();
+        return response()->json(['success' => 'User deleted']);
+    }
+
+
 
 }

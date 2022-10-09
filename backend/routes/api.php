@@ -19,5 +19,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
-Route::post('register', [UserController::class, 'register']);
+Route::post('users/register', [UserController::class, 'register']);
+Route::get('users/uncomfirmed', [UserController::class, 'getAllUncomfirmed']);
+Route::put('users/confirm/{id}', [UserController::class, 'confirmRegistrationRequest']);
+Route::put('users/decline/{id}', [UserController::class, 'declineRegistrationRequest']);
+Route::get('users/get', [UserController::class, 'getAllUsers']);
+Route::delete('users/delete/{id}', [UserController::class, 'deleteUser']);

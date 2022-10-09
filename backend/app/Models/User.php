@@ -20,11 +20,11 @@ class User extends Model
         'Email',
         'Grade',
         'Password',
+        'Confirmation',
         'fk_Schoolid_School'
     ];
 
     protected $hidden = [
-        'Confirmation',
         'fk_Schoolid_School'
     ];
 
