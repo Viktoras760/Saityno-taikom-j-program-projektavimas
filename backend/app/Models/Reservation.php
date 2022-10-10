@@ -27,6 +27,8 @@ class Reservation extends Model
         'fk_Userid_User'
     ];
 
+    public $timestamps=false;
+
     public function classroom()
     {
         return $this->hasOne('App\Models\Classroom', 'id_Classroom', 'fk_Classroomid_Classroom');

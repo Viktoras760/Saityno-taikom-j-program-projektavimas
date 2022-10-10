@@ -12,9 +12,9 @@ return new class extends Migration
 
 		$table->integer('Number');
 		$table->integer('Pupil_capacity');
-		$table->tinyInteger('Musical_equipment')->nullable();
-		$table->tinyInteger('Chemistry_equipment')->nullable();
-		$table->tinyInteger('Computers')->nullable();
+		$table->enum('Musical_equipment',['Yra', 'Nėra'])->nullable();
+		$table->enum('Chemistry_equipment',['Yra', 'Nėra'])->nullable();
+		$table->enum('Computers',['Yra', 'Nėra'])->nullable();
 		$table->integer('id_Classroom',true);
 		$table->integer('fk_Floorid_Floor');
 

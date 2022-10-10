@@ -37,7 +37,7 @@ class User extends Model
 
     public function reservations()
     {
-        return $this->hasMany('App\Models\Reservation', 'fk_Userid_User', 'id_User');
+        return $this->belongsToMany('App\Models\Reservation', 'fk_Userid_User', 'id_User');
     }
 }
 /*

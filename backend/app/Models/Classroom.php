@@ -28,6 +28,8 @@ class Classroom extends Model
         'Computers'
     ];
 
+    public $timestamps=false;
+
     public function reservations()
     {
         return $this->belongsToMany('App\Models\Reservation', 'fk_Classroomid_Classroom', 'id_Classroom');

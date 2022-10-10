@@ -74,6 +74,26 @@ class UserController extends Controller
         return response()->json(['success' => 'User deleted']);
     }
 
+    function updateUser($id, Request $request)
+    {
+        $user = \App\Models\User::find($id);
+        if(!$user) {
+            return response()->json(['error' => 'User not found'], 404);
+        }
+        $user->update([
+            'Name' => $request->Name,
+            'Surname' => $request->Surname,
+            'Personal_code' => $request->Personal_code,
+            'Email' => $request->Email,
+            'Grade' => $request->Grade,
+            'Password' => Hash::make($request->Password),
+            'Confirmation' => $request->Confirmation,
+            'fk_Schoolid_School' => $request->fk_Schoolid_School,
+            'Role' => $request->Role
+        ]);
+        return response()->json(['success' => 'User updated successfully']);
+    }
+
 
 
 }

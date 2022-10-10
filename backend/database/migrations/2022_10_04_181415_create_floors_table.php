@@ -10,8 +10,9 @@ return new class extends Migration
     {
         Schema::create('floor', function (Blueprint $table) {
 
+        $table->integer('Floor_number');
 		$table->integer('Classroom_amount');
-		$table->tinyInteger('Sport_equipment');
+		$table->enum('Sport_equipment',['Yra', 'Nėra']);
 		$table->integer('id_Floor',true);
 		$table->integer('fk_Schoolid_School');
 

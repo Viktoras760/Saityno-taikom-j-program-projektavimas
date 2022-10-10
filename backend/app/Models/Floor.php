@@ -20,8 +20,11 @@ class Floor extends Model
     ];
 
     protected $hidden = [
-        'Sport_equipment'
+        'Sport_equipment',
+        'fk_Schoolid_School'
     ];
+
+    public $timestamps=false;
 
     public function classrooms()
     {

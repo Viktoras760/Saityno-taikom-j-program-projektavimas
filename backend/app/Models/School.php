@@ -20,6 +20,8 @@ class School extends Model
         'Teacher_amount'
     ];
 
+    public $timestamps=false;
+
     public function floors()
     {
         return $this->belongsToMany('App\Models\Floor', 'fk_Schoolid_School', 'fk_Floorid_Floor');
