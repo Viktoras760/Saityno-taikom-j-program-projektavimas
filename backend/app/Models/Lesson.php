@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Reservation extends Model
+class Lesson extends Model
 {
     use HasFactory;
 
-    protected $table = 'reservation';
+    protected $table = 'lesson';
 
-    protected $primaryKey = 'id_Reservation';
+    protected $primaryKey = 'id_Lesson';
 
     protected $fillable = [
         'Lessons_name',
-        'Reservation_period',
+        'Lessons_starting_time',
+        'Lessons_ending_time',
         'Lower_grade_limit',
         'Upper_grade_limit',
         'fk_Classroomid_Classroom',
@@ -34,8 +35,12 @@ class Reservation extends Model
         return $this->hasOne('App\Models\Classroom', 'id_Classroom', 'fk_Classroomid_Classroom');
     }
 
-    public function user()
+    public function users()
     {
-        return $this->hasOne('App\Models\User', 'id_User', 'fk_Userid_User');
+        return $this->belongsToMany('App\Models\User', 'user_lesson', 'fk_Lessonid_Lesson', 'fk_Userid_User');
     }
+    /*public function users()
+    {
+        return $this->belongsToMany(User::class, 'user_lesson');
+    }*/
 }

@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use App\Models\Lesson;
 
 class UserController extends Controller
 {
@@ -23,17 +25,17 @@ class UserController extends Controller
     }
 
 
-    function getAllUncomfirmed()
+    /*function getAllUnconfirmed()
     {
-        $uncomfirmed = \App\Models\User::where('user.Confirmation','=','Uncomfirmed')->get();
+        $unconfirmed = \App\Models\User::where('user.Confirmation','=','Unconfirmed')->get();
 
         if (count($uncomfirmed) < 1) {
-            return response()->json(['message' => 'Uncomfirmed registration requests not found'], 404);
+            return response()->json(['message' => 'Unconfirmed registration requests not found'], 404);
         }
         return $uncomfirmed;
-    }
+    }*/
 
-    function confirmRegistrationRequest($id, Request $request)
+    /*function confirmRegistrationRequest($id, Request $request)
     {
         $user = \App\Models\User::find($id);
 
@@ -44,21 +46,35 @@ class UserController extends Controller
         ]);
 
         return response()->json(['success' => 'User updated successfully']);
-    }
+    }*/
 
     public function declineRegistrationRequest($id)
     {
+        $user = \App\Models\User::find($id);
+        if ($user->Confirmation != 'Unconfirmed')
+        {
+            return response()->json(['message' => 'User is already confirmed or declined'], 200);
+        }
         User::where('id_User',$id)->update(['Confirmation'=>'Declined']);
         return response()->json(['message' => 'Registration declined'], 200);
     }
 
-    function getAllUsers()
+    function getAllUsers(Request $request)
     {
-        $users = \App\Models\User::all();
-
-        if ($users == "") {
-            return response()->json(['message' => 'Users not found'], 404);
+        if ($request->Confirmation)
+        {
+            $users = \App\Models\User::where('user.Confirmation','=',$request->Confirmation)->get();
+            return $users;
         }
+        else if (\App\Models\User::where('user.Confirmation','=',$request->Confirmation)->get() == NULL)
+        {
+            return response()->json(['message' => 'Users with this filter are missing'], 404);
+        }
+        else if (!$request->Confirmation && count($request->all()) > 1)
+        {
+            return response()->json(['message' => 'This filter is not implemented yet'], 404);
+        }
+        $users = \App\Models\User::all();
         return $users;
     }
 
@@ -79,6 +95,11 @@ class UserController extends Controller
         $user = \App\Models\User::find($id);
         if(!$user) {
             return response()->json(['error' => 'User not found'], 404);
+        }
+        $contains = Str::contains($request->Email, '@');
+        if (!$contains)
+        {
+            return response()->json(['failure' => 'Invalid email entered']);
         }
         $user->update([
             'Name' => $request->Name,

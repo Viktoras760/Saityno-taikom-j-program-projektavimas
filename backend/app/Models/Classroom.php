@@ -30,9 +30,9 @@ class Classroom extends Model
 
     public $timestamps=false;
 
-    public function reservations()
+    public function lessons()
     {
-        return $this->belongsToMany('App\Models\Reservation', 'fk_Classroomid_Classroom', 'id_Classroom');
+        return $this->belongsToMany('App\Models\Lesson', 'fk_Classroomid_Classroom', 'id_Classroom');
     }
 
     public function floor()

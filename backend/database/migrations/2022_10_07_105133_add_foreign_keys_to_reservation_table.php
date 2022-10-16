@@ -13,9 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('reservation', function (Blueprint $table) {
-            $table->foreign(['fk_Classroomid_Classroom'], 'Reservation_BelongsTo_Classroom')->references(['id_Classroom'])->on('classroom');
-            $table->foreign(['fk_Userid_User'], 'Reservation_CreatedBy_User')->references(['id_User'])->on('user');
+        Schema::table('lesson', function (Blueprint $table) {
+            $table->foreign(['fk_Classroomid_Classroom'], 'Lesson_BelongsTo_Classroom')->references(['id_Classroom'])->on('classroom');
+            //$table->foreign(['fk_Userid_User'], 'Lesson_CreatedBy_User')->references(['id_User'])->on('user');
         });
     }
 
@@ -26,9 +26,9 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('reservation', function (Blueprint $table) {
-            $table->dropForeign('Reservation_BelongsTo_Classroom');
-            $table->dropForeign('Reservation_CreatedBy_User');
+        Schema::table('lesson', function (Blueprint $table) {
+            $table->dropForeign('Lesson_BelongsTo_Classroom');
+            //$table->dropForeign('Lesson_CreatedBy_User');
         });
     }
 };

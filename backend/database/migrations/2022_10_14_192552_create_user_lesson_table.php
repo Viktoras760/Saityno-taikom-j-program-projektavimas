@@ -13,8 +13,11 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('classroom', function (Blueprint $table) {
-            $table->foreign(['fk_Floorid_Floor'], 'Floor_Has_Classroom')->references(['id_Floor'])->on('floor');
+        Schema::create('user_lesson', function (Blueprint $table) {
+            $table->integer('fk_Userid_User');
+            $table->integer('fk_Lessonid_Lesson')->index('fk_Lessonid_Lesson');
+
+            $table->primary(['fk_Userid_User', 'fk_Lessonid_Lesson'], 'user_lesson_pkey');
         });
     }
 
@@ -25,8 +28,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('classroom', function (Blueprint $table) {
-            $table->dropForeign('Floor_Has_Classroom');
-        });
+        Schema::dropIfExists('user_lesson');
     }
 };

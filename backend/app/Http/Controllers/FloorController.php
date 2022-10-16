@@ -16,7 +16,11 @@ class FloorController extends Controller
         if(!$school) {
             return response()->json(['error' => 'School not found'], 404);
         }
-
+        $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('Floor_number', '=', $req->Floor_number)->get();
+        if(count($schoolsFloor) > 0)
+        {
+            return response()->json(['error' => 'School already has a floor with such number'], 404);
+        }
 
         $floor = new Floor;
         $floor->Floor_number= $req->input('Floor_number');
@@ -62,7 +66,7 @@ class FloorController extends Controller
         }
         if (count($schoolsFloor) < 1)
         {
-            return response()->json(['error' => 'Floor is in another school. Cannot get it'], 404);
+            return response()->json(['error' => 'Floor is in another school'], 404);
         }
         return $floor;
     }
@@ -71,7 +75,7 @@ class FloorController extends Controller
     {
         $school = \App\Models\School::find($idSchool);
         $floor = \App\Models\Floor::find($idFloor);
-        $classroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor);
+        $classroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->get();
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         if(!$school) {
             return response()->json(['error' => 'School not found'], 404);
@@ -83,7 +87,7 @@ class FloorController extends Controller
         {
             return response()->json(['error' => 'Floor is in another school. Cannot delete'], 404);
         }
-        if ($classroom)
+        if (count($classroom) > 0)
         {
             return response()->json(['message' => 'Floor has classroom(s) attached. Delete them first.'], 401);
         }

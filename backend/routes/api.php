@@ -6,7 +6,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\FloorController;
 use App\Http\Controllers\ClassroomController;
-use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\LessonController;
 
 
 /*
@@ -25,35 +25,37 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //User routes
-Route::post('user/', [UserController::class, 'register']);
-Route::get('user/sorted', [UserController::class, 'getAllUncomfirmed']);
-Route::put('user/{id}/apis?', [UserController::class, 'confirmRegistrationRequest']);
-Route::patch('user/{id}', [UserController::class, 'declineRegistrationRequest']);
-Route::get('user', [UserController::class, 'getAllUsers']);
-Route::delete('user/{id}', [UserController::class, 'deleteUser']);
-Route::put('user/{id}', [UserController::class, 'updateUser']);
+Route::post('users', [UserController::class, 'register']);
+Route::patch('users/{id}', [UserController::class, 'declineRegistrationRequest']);
+Route::get('users', [UserController::class, 'getAllUsers']);
+Route::delete('users/{id}', [UserController::class, 'deleteUser']);
+Route::put('users/{id}', [UserController::class, 'updateUser']);
 
 //School routes
-Route::post('school/add', [SchoolController::class, 'addSchool']);
-Route::put('school/update/{id}', [SchoolController::class, 'updateSchool']);
-Route::get('school/get/{id}', [SchoolController::class, 'getSchool']);
-Route::get('school/getAll', [SchoolController::class, 'getAllSchools']);
-Route::delete('school/delete/{id}', [SchoolController::class, 'deleteSchool']);
+Route::post('schools', [SchoolController::class, 'addSchool']);
+Route::put('schools/{id}', [SchoolController::class, 'updateSchool']);
+Route::get('schools/{id}', [SchoolController::class, 'getSchool']);
+Route::get('schools', [SchoolController::class, 'getAllSchools']);
+Route::delete('schools/{id}', [SchoolController::class, 'deleteSchool']);
 
 //Floor routes
-Route::post('school/{id}/floor/add', [FloorController::class, 'addFloor']);
-Route::put('school/{idSchool}/floor/update/{idFloor}', [FloorController::class, 'updateFloor']);
-Route::get('school/{idSchool}/floor/get/{idFloor}', [FloorController::class, 'getFloor']);
-Route::delete('school/{idSchool}/floor/delete/{idFloor}', [FloorController::class, 'deleteFloor']);
-Route::get('school/{idSchool}/floor/getBySchool', [FloorController::class, 'getFloorBySchool']);
+Route::post('schools/{id}/floors', [FloorController::class, 'addFloor']);
+Route::put('schools/{idSchool}/floors/{idFloor}', [FloorController::class, 'updateFloor']);
+Route::get('schools/{idSchool}/floors/{idFloor}', [FloorController::class, 'getFloor']);
+Route::delete('schools/{idSchool}/floors/{idFloor}', [FloorController::class, 'deleteFloor']);
+Route::get('schools/{idSchool}/floors', [FloorController::class, 'getFloorBySchool']);
 
-//Classes routes
-Route::post('school/{idSchool}/floor/{idFloor}/classroom/add', [ClassroomController::class, 'addClassroom']);
-Route::put('school/{idSchool}/floor/{idFloor}/classroom/update/{idClassroom}', [ClassroomController::class, 'updateClassroom']);
-Route::get('school/{idSchool}/floor/{idFloor}/classroom/get/{idClassroom}', [ClassroomController::class, 'getClassroom']);
-Route::delete('school/{idSchool}/floor/{idFloor}/classroom/delete/{idClassroom}', [ClassroomController::class, 'deleteClassroom']);
-Route::get('school/{idSchool}/floor/{idFloor}/classroom/getByFloor', [ClassroomController::class, 'getClassroomByFloor']);
+//Classroom routes
+Route::post('schools/{idSchool}/floors/{idFloor}/classrooms', [ClassroomController::class, 'addClassroom']);
+Route::put('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}', [ClassroomController::class, 'updateClassroom']);
+Route::get('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}', [ClassroomController::class, 'getClassroom']);
+Route::delete('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}', [ClassroomController::class, 'deleteClassroom']);
+Route::get('schools/{idSchool}/floors/{idFloor}/classrooms', [ClassroomController::class, 'getClassroomByFloor']);
 
-//Reservation routes
-Route::get('school/{idSchool}/floor/{idFloor}/classroom/{idClassroom}/reservation/get/{id}', [ReservationController::class, 'getReservation']);
-Route::post('school/{idSchool}/floor/{idFloor}/classroom/{idClassroom}/reservation/add', [ReservationController::class, 'addReservation']);
+//Lesson routes
+Route::get('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons/{id}', [LessonController::class, 'getLesson']);
+Route::post('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons', [LessonController::class, 'addLesson']);
+Route::post('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons/{id}', [LessonController::class, 'registerToLesson']);
+Route::delete('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons/{id}', [LessonController::class, 'deleteLesson']);
+Route::delete('user_lessons/{id}', [LessonController::class, 'unregisterFromLesson']);
+Route::put('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons/{id}', [LessonController::class, 'updateLesson']);

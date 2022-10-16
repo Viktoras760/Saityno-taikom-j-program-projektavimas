@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Floor;
 use App\Models\School;
 use App\Models\Classroom;
-use App\Models\Reservation;
+use App\Models\Lesson;
 
 class ClassroomController extends Controller
 {
@@ -16,6 +16,7 @@ class ClassroomController extends Controller
         $school = \App\Models\School::find($idSchool);
 
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
+        $classroomEx = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->where('Number', '=', $req->Number)->get();
 
         if(!$school) {
             return response()->json(['error' => 'School not found'], 404);
@@ -27,6 +28,11 @@ class ClassroomController extends Controller
         if (count($schoolsFloor) < 1)
         {
             return response()->json(['error' => 'Floor is in another school. Cannot add classroom'], 404);
+        }
+
+        if (count($classroomEx) > 0)
+        {
+            return response()->json(['error' => 'Classroom with such number already exists on this floor'], 404);
         }
 
 
@@ -93,11 +99,11 @@ class ClassroomController extends Controller
         }
         if (count($schoolsFloor) < 1)
         {
-            return response()->json(['error' => 'Floor is in another school. Cannot get it'], 404);
+            return response()->json(['error' => 'Floor is in another school'], 404);
         }
         if (count($FloorsClassroom) < 1)
         {
-            return response()->json(['error' => 'Classroom is on another floor. Cannot get it'], 404);
+            return response()->json(['error' => 'Classroom is on another floor'], 404);
         }
         return $classroom;
     }
@@ -106,7 +112,7 @@ class ClassroomController extends Controller
     {
         $floor = \App\Models\Floor::find($idFloor);
         $school = \App\Models\School::find($idSchool);
-        $reservation = \App\Models\Reservation::where('fk_Classroomid_Classroom', '=', $idClassroom)->get();
+        $lesson = \App\Models\Lesson::where('fk_Classroomid_Classroom', '=', $idClassroom)->get();
         $classroom = \App\Models\Classroom::find($idClassroom);
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         $FloorsClassroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->where('id_Classroom', '=', $idClassroom)->get();
@@ -127,9 +133,9 @@ class ClassroomController extends Controller
         {
             return response()->json(['error' => 'Classroom is on another floor. Cannot delete'], 404);
         }
-        if (count($reservation) > 1)
+        if (count($lesson) > 1)
         {
-            return response()->json(['error' => 'Classroom has reservation(s). Cannot delete', $reservation], 404);
+            return response()->json(['error' => 'Classroom has lesson(s). Cannot delete', $lesson], 404);
         }
 
         $classroom->delete();

@@ -35,9 +35,9 @@ class User extends Model
         return $this->hasOne('App\Models\School', 'id_School', 'fk_Schoolid_School');
     }
 
-    public function reservations()
+    public function lessons()
     {
-        return $this->belongsToMany('App\Models\Reservation', 'fk_Userid_User', 'id_User');
+        return $this->belongsToMany('App\Models\Lesson', 'user_lesson', 'fk_Userid_User', 'fk_Lessonid_Lesson');
     }
 }
 /*

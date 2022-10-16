@@ -63,11 +63,10 @@ class SchoolController extends Controller
         if ($school == "") {
             return response()->json(['message' => 'School does not exist'], 404);
         }
-        else if ($user || $floor)
+        else if (count($user) > 0 || count($floor) > 0)
         {
             return response()->json(['message' => 'School has users or floor attached. Delete them first.'], 401);
         }
-
         $school->delete();
         return response()->json(['success' => 'School deleted']);
     }
