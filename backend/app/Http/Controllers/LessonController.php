@@ -110,8 +110,8 @@ class LessonController extends Controller
 
         $validator = Validator::make($req->all(), [
             'Lessons_name' => 'required|string|max:255',
-            'Lower_grade_limit' => 'required|integer|max:12',
-            'Upper_grade_limit' => 'required|integer|max:12',
+            'Lower_grade_limit' => 'required|integer|max:12|min:0',
+            'Upper_grade_limit' => 'required|integer|max:12|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -284,6 +284,14 @@ class LessonController extends Controller
         ]);
         return response()->json(['success' => 'Lesson updated']);
     }
+
+    function getUserLessons(Request $request, $idSchool, $idFloor, $idClassroom, $id)
+    {
+        $userlessons = \App\Models\User::find($request->id_User)->lessons()->get();
+        return $userlessons;
+    }
+
+
 
     
 }

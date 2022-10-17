@@ -37,8 +37,8 @@ class ClassroomController extends Controller
         }
 
         $validator = Validator::make($req->all(), [
-            'Number' => 'required|integer|max:100000',
-            'Pupil_capacity' => 'required|integer|max:500'
+            'Number' => 'required|integer|max:100000|min:1',
+            'Pupil_capacity' => 'required|integer|max:500|min:1'
 
         ]);
 

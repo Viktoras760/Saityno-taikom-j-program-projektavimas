@@ -59,3 +59,4 @@ Route::post('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lesson
 Route::delete('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons/{id}', [LessonController::class, 'deleteLesson']);
 Route::delete('user_lessons/{id}', [LessonController::class, 'unregisterFromLesson']);
 Route::put('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons/{id}', [LessonController::class, 'updateLesson']);
+Route::get('user_lessons/{id}', [LessonController::class, 'getUserLessons']);

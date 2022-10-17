@@ -24,8 +24,8 @@ class FloorController extends Controller
         }
 
         $validator = Validator::make($req->all(), [
-            'Floor_number' => 'required|integer|max:50',
-            'Classroom_amount' => 'required|integer|max:100',
+            'Floor_number' => 'required|integer|max:50|min:1',
+            'Classroom_amount' => 'required|integer|max:100|min:1',
         ]);
 
         if ($validator->fails()) {

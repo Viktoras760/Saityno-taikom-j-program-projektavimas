@@ -57,8 +57,8 @@ class SchoolController extends Controller
         $validator = Validator::make($req->all(), [
             'Name' => 'required|string|max:255',
             'Adress' => 'required|string|max:255',
-            'Pupil_amount' => 'required|integer|max:5000',
-            'Teacher_amount' => 'required|integer|max:1000',
+            'Pupil_amount' => 'required|integer|max:5000|min:0',
+            'Teacher_amount' => 'required|integer|max:1000|min:0',
         ]);
 
         if ($validator->fails()) {
