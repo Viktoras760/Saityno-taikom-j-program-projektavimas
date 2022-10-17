@@ -61,3 +61,6 @@ Mokytojas/Užklasinės veiklos vedėjas:
 
 Sistemos sudedamosios dalys:
 • Kliento pusė (ang. Front-End) – naudojant React.js; • Serverio pusė (angl. Back-End) – naudojant PHP Laravel. Duomenų bazė – MySQL.
+
+![image](https://user-images.githubusercontent.com/35394736/196100637-c2e4b4f6-4a6a-40b3-a983-d212d8d91dfe.png)
+
