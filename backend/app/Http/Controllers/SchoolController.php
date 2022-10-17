@@ -6,20 +6,11 @@ use Illuminate\Http\Request;
 use App\Models\School;
 use App\Models\User;
 use App\Models\Floor;
+use Validator;
 
 class SchoolController extends Controller
 {
-    function addSchool(Request $req)
-    {
-        $school = new School;
-        $school->Name= $req->input('Name');
-        $school->Adress= $req->input('Adress');
-        $school->Pupil_amount= $req->input('Pupil_amount');
-        $school->Teacher_amount= $req->input('Teacher_amount');
-        $school->save();
-        return $school;
-    }
-
+    
     function updateSchool($id, Request $request)
     {
         $school = \App\Models\School::find($id);
@@ -54,6 +45,35 @@ class SchoolController extends Controller
         return $schools;
     }
 
+    function addSchool(Request $req)
+    {
+        $schools = \App\Models\School::where('Name', '=', $req->input('Name'))->get();
+        $address = \App\Models\School::where('Adress', '=', $req->input('Adress'))->get();
+        if(count($schools) > 0 || count($address) > 0)
+        {
+            return response()->json(['message' => 'School already exist'], 400);
+        }
+
+        $validator = Validator::make($req->all(), [
+            'Name' => 'required|string|max:255',
+            'Adress' => 'required|string|max:255',
+            'Pupil_amount' => 'required|integer|max:5000',
+            'Teacher_amount' => 'required|integer|max:1000',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 401);
+        }
+
+        $school = new School;
+        $school->Name= $req->input('Name');
+        $school->Adress= $req->input('Adress');
+        $school->Pupil_amount= $req->input('Pupil_amount');
+        $school->Teacher_amount= $req->input('Teacher_amount');
+        $school->save();
+        return $school;
+    }
+
     function deleteSchool($id)
     {
         $school = \App\Models\School::find($id);
@@ -65,7 +85,7 @@ class SchoolController extends Controller
         }
         else if (count($user) > 0 || count($floor) > 0)
         {
-            return response()->json(['message' => 'School has users or floor attached. Delete them first.'], 401);
+            return response()->json(['message' => 'School has users or floor attached. Delete them first.'], 400);
         }
         $school->delete();
         return response()->json(['success' => 'School deleted']);

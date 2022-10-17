@@ -9,6 +9,7 @@ use App\Models\Floor;
 use App\Models\School;
 use App\Models\Classroom;
 use Illuminate\Support\Carbon;
+use Validator;
 
 class LessonController extends Controller
 {
@@ -105,6 +106,16 @@ class LessonController extends Controller
                     return response()->json(['error' => 'This time is already occupied by another lesson'], 404);
                 }
             }
+        }
+
+        $validator = Validator::make($req->all(), [
+            'Lessons_name' => 'required|string|max:255',
+            'Lower_grade_limit' => 'required|integer|max:12',
+            'Upper_grade_limit' => 'required|integer|max:12',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 401);
         }
 
         $lesson = new Lesson;

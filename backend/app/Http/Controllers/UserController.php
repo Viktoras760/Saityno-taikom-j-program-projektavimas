@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\Lesson;
+use Validator;
 
 class UserController extends Controller
 {
@@ -14,6 +15,27 @@ class UserController extends Controller
     // New user registration (adding to database)
     function register(Request $req)
     {
+        $code = \App\Models\User::where('Personal_code', '=', $req->input('Personal_code'))->get();
+        if(count($code) > 0)
+        {
+            return response()->json(['message' => 'User with such personal code already exist'], 400);
+        }
+        if($req->input('Personal_code') < 30000000000)
+        {
+            return response()->json(['message' => 'Invalid personal code'], 400);
+        }
+        //|regex:/^[a-zA-ZÑñ\s]+$/ 
+        //Lithuanian simbol problem with only letters regex
+        $validator = Validator::make($req->all(), [
+            'Name' => 'required|string|max:255',
+            'Surname' => 'required|string|max:255',
+            'Email' => 'required|string|max:255'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 401);
+        }
+
         $user = new User;
         $user->Name= $req->input('Name');
         $user->Surname= $req->input('Surname');

@@ -7,6 +7,7 @@ use App\Models\Floor;
 use App\Models\School;
 use App\Models\Classroom;
 use App\Models\Lesson;
+use Validator;
 
 class ClassroomController extends Controller
 {
@@ -33,6 +34,16 @@ class ClassroomController extends Controller
         if (count($classroomEx) > 0)
         {
             return response()->json(['error' => 'Classroom with such number already exists on this floor'], 404);
+        }
+
+        $validator = Validator::make($req->all(), [
+            'Number' => 'required|integer|max:100000',
+            'Pupil_capacity' => 'required|integer|max:500'
+
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 401);
         }
 
 

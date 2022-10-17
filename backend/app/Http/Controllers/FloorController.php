@@ -7,6 +7,7 @@ use App\Models\Floor;
 use App\Models\School;
 use App\Models\Classroom;
 use Illuminate\Support\Collection;
+use Validator;
 
 class FloorController extends Controller
 {
@@ -20,6 +21,15 @@ class FloorController extends Controller
         if(count($schoolsFloor) > 0)
         {
             return response()->json(['error' => 'School already has a floor with such number'], 404);
+        }
+
+        $validator = Validator::make($req->all(), [
+            'Floor_number' => 'required|integer|max:50',
+            'Classroom_amount' => 'required|integer|max:100',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 401);
         }
 
         $floor = new Floor;
