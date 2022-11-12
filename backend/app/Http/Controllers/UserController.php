@@ -13,7 +13,7 @@ class UserController extends Controller
 {
 
     // New user registration (adding to database)
-    function register(Request $req)
+    function addUser(Request $req)
     {
         $code = \App\Models\User::where('Personal_code', '=', $req->input('Personal_code'))->get();
         if(count($code) > 0)
@@ -29,7 +29,7 @@ class UserController extends Controller
         $validator = Validator::make($req->all(), [
             'Name' => 'required|string|max:255',
             'Surname' => 'required|string|max:255',
-            'Email' => 'required|string|max:255'
+            'email' => 'required|string|max:255'
         ]);
 
         if ($validator->fails()) {
@@ -40,8 +40,8 @@ class UserController extends Controller
         $user->Name= $req->input('Name');
         $user->Surname= $req->input('Surname');
         $user->Personal_code= $req->input('Personal_code');
-        $user->Email= $req->input('Email');
-        $user->Password= Hash::make($req->input('Password'));
+        $user->email= $req->input('email');
+        $user->password= Hash::make($req->input('password'));
         $user->save();
         return $user;
     }

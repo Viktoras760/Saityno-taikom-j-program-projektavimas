@@ -7,6 +7,7 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\FloorController;
 use App\Http\Controllers\ClassroomController;
 use App\Http\Controllers\LessonController;
+use App\Http\Controllers\AuthController;
 
 
 /*
@@ -25,7 +26,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //User routes
-Route::post('users', [UserController::class, 'register']);
+Route::post('users', [UserController::class, 'addUser']);
 Route::patch('users/{id}', [UserController::class, 'declineRegistrationRequest']);
 Route::get('users', [UserController::class, 'getAllUsers']);
 Route::delete('users/{id}', [UserController::class, 'deleteUser']);
@@ -60,3 +61,16 @@ Route::delete('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/less
 Route::delete('user_lessons/{id}', [LessonController::class, 'unregisterFromLesson']);
 Route::put('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons/{id}', [LessonController::class, 'updateLesson']);
 Route::get('user_lessons/{id}', [LessonController::class, 'getUserLessons']);
+
+//Auth routes
+Route::group([
+    'middleware' => 'api',
+    'prefix' => 'auth'
+], function ($router) {
+    Route::post('login', [AuthController::class, 'login'])/*->name('login')*/;
+    Route::post('register', [AuthController::class, 'register']);
+    Route::get('logout', [AuthController::class, 'logout'])/*->name('logout')*/;
+    Route::post('refresh', [AuthController::class, 'refresh']);
+    Route::post('me', [AuthController::class, 'me']);
+});
+//Route::get('token/{id}', [AuthController::class, 'getToken']);
