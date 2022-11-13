@@ -13,10 +13,10 @@ use App\Http\Controllers\AuthController;
 class UserController extends Controller
 {
 
-    public function __construct()
+    /*public function __construct()
     {
-        $this->middleware('auth:api', ['except' => []]);
-    }
+        $this->middleware('auth:api', ['except' => ['test']]);
+    }*/
 
     // New user registration (adding to database)
     function addUser(Request $req)
@@ -181,6 +181,11 @@ class UserController extends Controller
             'Role' => $request->Role
         ]);
         return response()->json(['success' => 'User updated successfully']);
+    }
+
+    function test()
+    {
+        return response()->json(['random']);
     }
 
 

@@ -26,15 +26,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 //User routes
-Route::group([
+/*Route::group([
     'middleware' => 'api'
-], function ($router) {
+], function ($router) {*/
 Route::post('users', [UserController::class, 'addUser']);
 Route::patch('users/{id}', [UserController::class, 'declineRegistrationRequest']);
 Route::get('users', [UserController::class, 'getAllUsers']);
 Route::delete('users/{id}', [UserController::class, 'deleteUser']);
 Route::put('users/{id}', [UserController::class, 'updateUser']);
-});
+Route::post('test', [UserController::class, 'test']);
+//});
+
+//Route::post('test', [UserController::class, 'test']);
 
 //School routes
 Route::group([
@@ -80,6 +83,8 @@ Route::delete('user_lessons/{id}', [LessonController::class, 'unregisterFromLess
 Route::put('schools/{idSchool}/floors/{idFloor}/classrooms/{idClassroom}/lessons/{id}', [LessonController::class, 'updateLesson']);
 Route::get('user_lessons/', [LessonController::class, 'getUserLessons']);
 });
+
+
 
 //Auth routes
 Route::group([
