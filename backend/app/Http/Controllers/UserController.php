@@ -8,9 +8,15 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\Lesson;
 use Validator;
+use App\Http\Controllers\AuthController;
 
 class UserController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => []]);
+    }
 
     // New user registration (adding to database)
     function addUser(Request $req)
@@ -72,6 +78,14 @@ class UserController extends Controller
 
     public function declineRegistrationRequest($id)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $user = \App\Models\User::find($id);
         if ($user->Confirmation != 'Unconfirmed')
         {
@@ -83,6 +97,14 @@ class UserController extends Controller
 
     function getAllUsers(Request $request)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         if ($request->Confirmation)
         {
             $users = \App\Models\User::where('user.Confirmation','=',$request->Confirmation)->get();
@@ -102,6 +124,14 @@ class UserController extends Controller
 
     function deleteUser($id)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $user = \App\Models\User::find($id);
 
         if ($user == "") {
@@ -114,6 +144,22 @@ class UserController extends Controller
 
     function updateUser($id, Request $request)
     {
+        $user = \App\Models\User::find($id);
+        $role = (new AuthController)->authRole();
+        if (($role == 'Teacher' || $role == 'Pupil') && $id != auth()->user()->id_User)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to update other users',
+            ], 401);
+        }
+        else if ($role == 'School Administrator' && auth()->user()->fk_Schoolid_School != $user->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to update users from this school',
+            ], 401);
+        }
         $user = \App\Models\User::find($id);
         if(!$user) {
             return response()->json(['error' => 'User not found'], 404);

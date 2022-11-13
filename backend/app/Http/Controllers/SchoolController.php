@@ -7,13 +7,49 @@ use App\Models\School;
 use App\Models\User;
 use App\Models\Floor;
 use Validator;
+use App\Http\Controllers\AuthController;
 
 class SchoolController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => []]);
+    }
     
     function updateSchool($id, Request $request)
     {
+
+        $state = (new AuthController)->loggedIn();
+        if ($state = False)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized',
+            ], 401);
+        }
+
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' && $role != 'School Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
+
+
         $school = \App\Models\School::find($id);
+
+        if ($role == 'School Administrator' && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to update this school',
+            ], 401);
+        }
+
+
         if(!$school) {
             return response()->json(['error' => 'School not found'], 404);
         }
@@ -28,7 +64,22 @@ class SchoolController extends Controller
 
     function getSchool($id)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' && $role != 'School Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $school = \App\Models\School::find($id);
+        if ($role == 'School Administrator' && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to update this school',
+            ], 401);
+        }
         if(!$school) {
             return response()->json(['error' => 'School not found'], 404);
         }
@@ -37,6 +88,14 @@ class SchoolController extends Controller
 
     function getAllSchools()
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $schools = \App\Models\School::all();
 
         if (!$schools) {
@@ -47,6 +106,14 @@ class SchoolController extends Controller
 
     function addSchool(Request $req)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' )
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $schools = \App\Models\School::where('Name', '=', $req->input('Name'))->get();
         $address = \App\Models\School::where('Adress', '=', $req->input('Adress'))->get();
         if(count($schools) > 0 || count($address) > 0)
@@ -76,6 +143,14 @@ class SchoolController extends Controller
 
     function deleteSchool($id)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $school = \App\Models\School::find($id);
         $user = \App\Models\User::where('user.fk_Schoolid_School','=',$id)->get();
         $floor = \App\Models\Floor::where('floor.fk_Schoolid_School','=',$id)->get();

@@ -17,6 +17,7 @@ return new class extends Migration
         $table->integer('Lower_grade_limit');
         $table->integer('Upper_grade_limit');
 		$table->integer('fk_Classroomid_Classroom');
+        $table->integer('creator_id');
         });
     }
 

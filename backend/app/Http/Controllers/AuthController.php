@@ -21,6 +21,26 @@ class AuthController extends Controller
         $this->middleware('auth:api', ['except' => ['login','register']]);
     }
 
+    public function loggedIn()
+    {
+        if (auth()->user())
+        return True;
+        else return false;
+    }
+
+    public function authRole()
+    {
+        $log = AuthController::loggedIn();
+        if ($log == True)
+        {
+            return auth()->user()->Role;
+        }
+        else return response()->json([
+            'status' => 'error',
+            'message' => 'Unauthorized',
+        ], 401); 
+    }
+
     public function payloadEncoding($token)
     {
         //token encoding
@@ -145,6 +165,9 @@ class AuthController extends Controller
 
     public function logout()
     {
+        auth()->user()->update([
+            'iat' => NULL
+        ]);
         auth()->logout();
         return response()->json([
             'status' => 'success',

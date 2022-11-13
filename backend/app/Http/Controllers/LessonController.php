@@ -10,14 +10,27 @@ use App\Models\School;
 use App\Models\Classroom;
 use Illuminate\Support\Carbon;
 use Validator;
+use App\Http\Controllers\AuthController;
 
 class LessonController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => []]);
+    }
+
     function getLesson($idSchool, $idFloor, $idClassroom, $id)
     {
-
+        $role = (new AuthController)->authRole();
         $floor = \App\Models\Floor::find($idFloor);
         $school = \App\Models\School::find($idSchool);
+        if (($role == 'School Administrator' || $role == 'Teacher' || $role == 'Pupil') && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to get lessons in this school',
+            ], 401);
+        }
         $classroom = \App\Models\Classroom::find($idClassroom);
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         $FloorsClassroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->where('id_Classroom', '=', $idClassroom)->get();
@@ -41,6 +54,13 @@ class LessonController extends Controller
 
 
         $lesson = \App\Models\Lesson::find($id);
+        if ($role == 'Pupil' && auth()->user()->Grade < $lesson->Lower_grade_limit || $lesson->Upper_grade_limit < auth()->user()->Grade)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Lesson is not suitable for your grade',
+            ], 401);
+        }
         if(!$lesson) {
             return response()->json(['error' => 'Lesson not found'], 404);
         }
@@ -54,8 +74,23 @@ class LessonController extends Controller
     function addLesson(Request $req, $idSchool, $idFloor, $idClassroom)
     {
 
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' && $role != 'School Administrator'&& $role != 'Teacher')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $floor = \App\Models\Floor::find($idFloor);
         $school = \App\Models\School::find($idSchool);
+        if (($role == 'School Administrator' || $role == 'Teacher') && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to add lessons in this school',
+            ], 401);
+        }
         $classroom = \App\Models\Classroom::find($idClassroom);
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         $FloorsClassroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->where('id_Classroom', '=', $idClassroom)->get();
@@ -125,16 +160,24 @@ class LessonController extends Controller
         $lesson->Lower_grade_limit= $req->input('Lower_grade_limit');
         $lesson->Upper_grade_limit= $req->input('Upper_grade_limit');
         $lesson->fk_Classroomid_Classroom= $idClassroom;
+        $lesson->creator_id= auth()->user()->id_User;
         $lesson->save();
         return $lesson;
     }
 
-    function registerToLesson(Request $request, $idSchool, $idFloor, $idClassroom, $id)
+    function registerToLesson($idSchool, $idFloor, $idClassroom, $id)
     {
 
-        //
+        $role = (new AuthController)->authRole();
         $floor = \App\Models\Floor::find($idFloor);
         $school = \App\Models\School::find($idSchool);
+        if (($role == 'School Administrator' || $role == 'Teacher' || $role == 'Pupil') && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to register to lessons in this school',
+            ], 401);
+        }
         $classroom = \App\Models\Classroom::find($idClassroom);
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         $FloorsClassroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->where('id_Classroom', '=', $idClassroom)->get();
@@ -158,15 +201,25 @@ class LessonController extends Controller
         }
         //
 
-        $user = \App\Models\User::find($request->id_User);
+        $user = auth()->user();
         $lesson = \App\Models\Lesson::find($id);
-        $userlessons = \App\Models\User::find($request->id_User)->lessons()->get();
+        if(!$lesson) {
+            return response()->json(['error' => 'Lesson not found'], 404);
+        }
+        if ($role == 'Pupil' && auth()->user()->Grade < $lesson->Lower_grade_limit || $lesson->Upper_grade_limit < auth()->user()->Grade)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Lesson is not suitable for your grade',
+            ], 401);
+        }
+        $userlessons = auth()->user()->lessons()->get();
         //return response()->json(['error' => 'This lesson does not suit your grade', $userlessons]);
         
-        if ( $user->Grade < $lesson->Lower_grade_limit || $user->Grade > $lesson->Upper_grade_limit)
+        /*if ( $user->Grade < $lesson->Lower_grade_limit || $user->Grade > $lesson->Upper_grade_limit)
         {
             return response()->json(['error' => 'This lesson does not suit your grade']);
-        }
+        }*/
 
         for($i = 0; $i < count($userlessons); $i++)
         {
@@ -192,15 +245,41 @@ class LessonController extends Controller
             }
         }
 
-        $lesson->users()->attach($user);
+        $lesson->users()->attach(auth()->user());
         return response()->json(['success' => 'Successfully registered']);
     }
 
     function deleteLesson($idSchool, $idFloor, $idClassroom, $id)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' && $role != 'School Administrator'&& $role != 'Teacher')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $floor = \App\Models\Floor::find($idFloor);
         $school = \App\Models\School::find($idSchool);
+        if (($role == 'School Administrator' || $role == 'Teacher' ) && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to delete lessons in this school',
+            ], 401);
+        }
         $lesson = \App\Models\Lesson::find($id);
+        if (!$lesson)
+        {
+            return response()->json(['error' => 'Lesson not found'], 404);
+        }
+        if ($role == 'Teacher' && auth()->user()->id_User != $lesson->creator_id)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to delete another teacher lesson',
+            ], 401);
+        }
         $classroom = \App\Models\Classroom::find($idClassroom);
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         $FloorsClassroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->where('id_Classroom', '=', $idClassroom)->get();
@@ -232,22 +311,46 @@ class LessonController extends Controller
         return response()->json(['success' => 'Lesson deleted']);
     }
 
-    function unregisterFromLesson(Request $request, $id)
+    function unregisterFromLesson($id)
     {
-        
         $lesson = \App\Models\Lesson::find($id);
-        
-        $user = \App\Models\User::find($request->id_User);
 
-        $lesson->users()->detach($user);
+        $lesson->users()->detach(auth()->user());
         return response()->json(['success' => 'Successfully unregistered']);
     }
 
     function updateLesson(Request $request, $idSchool, $idFloor, $idClassroom, $id)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' && $role != 'School Administrator'&& $role != 'Teacher')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $floor = \App\Models\Floor::find($idFloor);
         $school = \App\Models\School::find($idSchool);
+        if (($role == 'School Administrator' || $role == 'Teacher' ) && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to add lessons in this school',
+            ], 401);
+        }
+        
         $lesson = \App\Models\Lesson::find($id);
+        if (!$lesson)
+        {
+            return response()->json(['error' => 'Lesson not found'], 404);
+        }
+        if ($role == 'Teacher' && auth()->user()->id_User != $lesson->creator_id)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to delete another teacher lesson',
+            ], 401);
+        }
         $classroom = \App\Models\Classroom::find($idClassroom);
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         $FloorsClassroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->where('id_Classroom', '=', $idClassroom)->get();
@@ -285,9 +388,13 @@ class LessonController extends Controller
         return response()->json(['success' => 'Lesson updated']);
     }
 
-    function getUserLessons(Request $request, $idSchool, $idFloor, $idClassroom, $id)
+    function getUserLessons()
     {
-        $userlessons = \App\Models\User::find($request->id_User)->lessons()->get();
+        $userlessons = \App\Models\User::find(auth()->user()->id_User)->lessons()->get();
+        if (count($userlessons) < 1)
+        {
+            return response()->json(['error' => 'user has no lessons'], 404);
+        }
         return $userlessons;
     }
 

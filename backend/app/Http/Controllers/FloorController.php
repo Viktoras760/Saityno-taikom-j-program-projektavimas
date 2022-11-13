@@ -8,15 +8,42 @@ use App\Models\School;
 use App\Models\Classroom;
 use Illuminate\Support\Collection;
 use Validator;
+use App\Http\Controllers\AuthController;
 
 class FloorController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => []]);
+    }
+
     function addFloor(Request $req, $idSchool)
     {
+
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' && $role != 'School Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
+
+
         $school = \App\Models\School::find($idSchool);
         if(!$school) {
             return response()->json(['error' => 'School not found'], 404);
         }
+
+        if ($role == 'School Administrator' && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to add floors at this school',
+            ], 401);
+        }
+
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('Floor_number', '=', $req->Floor_number)->get();
         if(count($schoolsFloor) > 0)
         {
@@ -43,8 +70,24 @@ class FloorController extends Controller
 
     function updateFloor($idSchool, $idFloor, Request $request)
     {
+
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' && $role != 'School Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $floor = \App\Models\Floor::find($idFloor);
         $school = \App\Models\School::find($idSchool);
+        if ($role == 'School Administrator' && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to update floors at this school',
+            ], 401);
+        }
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         if(!$school) {
             return response()->json(['error' => 'School not found'], 404);
@@ -65,7 +108,15 @@ class FloorController extends Controller
 
     function getFloor($idSchool, $idFloor)
     {
+        $role = (new AuthController)->authRole();
         $school = \App\Models\School::find($idSchool);
+        if (($role == 'School Administrator' || $role == 'Teacher' || $role == 'Pupil') && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to get floors at this school',
+            ], 401);
+        }
         $floor = \App\Models\Floor::find($idFloor);
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
         if(!$school) {
@@ -83,7 +134,22 @@ class FloorController extends Controller
 
     function deleteFloor($idSchool, $idFloor)
     {
+        $role = (new AuthController)->authRole();
+        if($role != 'System Administrator' && $role != 'School Administrator')
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to do that',
+            ], 401);
+        }
         $school = \App\Models\School::find($idSchool);
+        if ($role == 'School Administrator' && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to delete floors at this school',
+            ], 401);
+        }
         $floor = \App\Models\Floor::find($idFloor);
         $classroom = \App\Models\Classroom::where('fk_Floorid_Floor', '=', $idFloor)->get();
         $schoolsFloor = \App\Models\Floor::where('fk_Schoolid_School', '=', $idSchool)->where('id_Floor', '=', $idFloor)->get();
@@ -108,8 +174,16 @@ class FloorController extends Controller
 
     function getFloorBySchool($idSchool)
     {
+        $role = (new AuthController)->authRole();
         $floors = \App\Models\Floor::where('floor.fk_Schoolid_School','=',$idSchool)->get();
         $school = \App\Models\School::find($idSchool);
+        if (($role == 'School Administrator' || $role == 'Teacher' || $role == 'Pupil') && $school->id_School != auth()->user()->fk_Schoolid_School)
+        {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'No rights to get floors at this school',
+            ], 401);
+        }
         if(!$school) {
             return response()->json(['error' => 'School not found'], 404);
         }
